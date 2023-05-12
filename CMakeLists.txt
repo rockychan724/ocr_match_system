@@ -43,21 +43,14 @@ link_directories(
     /usr/local/tensorrt/lib
 )
 
-if(ANDROID)
-  add_library(ocr_match_system SHARED
-    main.cpp
-    widget.cpp
-    widget.h
-    widget.ui
-  )
-else()
-  add_executable(ocr_match_system
-    main.cpp
-    widget.cpp
-    widget.h
-    widget.ui
-  )
-endif()
+add_executable(ocr_match_system
+  main.cpp
+  my_thread.h
+  my_thread.cc
+  widget.cpp
+  widget.h
+  widget.ui
+)
 
 # target_link_libraries(ocr_match_system PRIVATE Qt5::Widgets -locr_infer -lpthread -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc)
 
