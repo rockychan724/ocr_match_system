@@ -12,8 +12,6 @@
 
 #include "opencv2/opencv.hpp"
 #include "ui_widget.h"
-// #include "data_type.h"
-#include "ocr_infer/api/data_type.h"
 
 Widget *Widget::this_ptr = nullptr;
 

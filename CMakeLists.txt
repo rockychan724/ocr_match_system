@@ -27,17 +27,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(Qt5_DIR /home/chenlei/Qt5.14.0/5.14.0/gcc_64/lib/cmake/Qt5)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
-# include_directories("/home/chenlei/Documents/cnc/ocr_infer/example/ocr_infer/include")
-# link_directories("/home/chenlei/Documents/cnc/ocr_infer/example/ocr_infer/lib")
-
 include_directories(
     ${PROJECT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/ocr_infer/include
     /usr/local/opencv4/include/opencv4
     /usr/local/cuda/include
     /usr/local/tensorrt/include
 )
 
 link_directories(
+    ${PROJECT_SOURCE_DIR}/ocr_infer/lib
     /usr/local/opencv4/lib
     /usr/local/cuda/lib64
     /usr/local/tensorrt/lib
@@ -52,7 +51,4 @@ add_executable(ocr_match_system
   widget.ui
 )
 
-# target_link_libraries(ocr_match_system PRIVATE Qt5::Widgets -locr_infer -lpthread -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc)
-
-target_link_libraries(ocr_match_system PRIVATE Qt5::Widgets ocr_infer -lpthread -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc)
-add_subdirectory(ocr_infer)
+target_link_libraries(ocr_match_system PRIVATE Qt5::Widgets -locr_infer -lpthread -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc)

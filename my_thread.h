@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-#include "ocr_infer/api/ocr_api.h"
+#include "ocr_api.h"
 
 typedef std::function<void(const std::string &, void *)> CallbackFunc;
 

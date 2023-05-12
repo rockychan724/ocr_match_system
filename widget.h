@@ -4,9 +4,7 @@
 #include <memory>
 
 #include <QWidget>
-// #include "ocr_api.h"
 #include "my_thread.h"
-#include "ocr_infer/api/ocr_api.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
