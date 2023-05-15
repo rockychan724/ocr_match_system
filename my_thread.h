@@ -7,7 +7,8 @@
 
 #include "ocr_api.h"
 
-typedef std::function<void(const std::string &, void *)> CallbackFunc;
+typedef std::function<void(const std::string &, const cv::Mat &, void *)>
+    CallbackFunc;
 
 class MyThread : public QThread {
   Q_OBJECT

@@ -24,8 +24,8 @@ Widget::Widget(QWidget *parent) : QWidget(parent), ui(new Ui::Widget) {
           SLOT(SlotUploadFile()));
   connect(ui->pushButton_uploaddir, SIGNAL(clicked()), this,
           SLOT(SlotUploadDir()));
-  connect(this, SIGNAL(SignalAppendText(QString)), this,
-          SLOT(SlotAppendText(QString)));
+  connect(this, SIGNAL(SignalAppendText(const QString &, const cv::Mat &)),
+          this, SLOT(SlotAppendText(const QString &, const cv::Mat &)));
 
   //    QMovie *movie = new
   //    QMovie("/home/chenlei/Documents/QtProjects/helloqtcreator/demo.jpg");
@@ -64,13 +64,13 @@ void Widget::SlotInit() {
  * Attention:
  * 注意，如果函数运行时间很长，一定不能直接调用该函数，不然会造成界面的主线程阻塞，
  * 导致界面卡住，无法显示效果不理想。正确做法是使用多线程将该函数放到子线程中去执行。
- * 
+ *
  * 趟过的坑：
  * OcrInfer::Run 在执行过程中会调用回调函数在界面中实时更新程序的处理结果，
  * 最开始的做法是直接在 SlotRun 函数里执行 OcrInfer::Run，但由于 OcrInfer::Run
  * 执行时间较长，这会导致主界面线程卡住，无法实时显示中间结果。正确的做法开启新的线程
  * 来运行 OcrInfer::Run。
- * 
+ *
  */
 void Widget::SlotRun() {
   my_thread->SetImageDir(image_dir);
@@ -117,9 +117,15 @@ void Widget::SlotUploadDir() {
   }
 }
 
-void Widget::SlotAppendText(const QString &text) {
+void Widget::SlotAppendText(const QString &text, const cv::Mat &det_res) {
   qDebug() << text;
   ui->textEdit_recResult->append(text);
+  cv::Mat img_rgb;
+  cv::cvtColor(det_res, img_rgb, cv::COLOR_BGR2RGB);
+  QImage img_qt(static_cast<const unsigned char *>(img_rgb.data), img_rgb.cols,
+                img_rgb.rows, img_rgb.step, QImage::Format_RGB888);
+  ui->label_detResult->setPixmap(QPixmap::fromImage(img_qt));
+  ui->label_detResult->setScaledContents(true);
 }
 
 void Widget::SlotPrintInfo(const QString &info) {
@@ -128,10 +134,12 @@ void Widget::SlotPrintInfo(const QString &info) {
 }
 
 // Callback function
-void Widget::Print(const std::string &res, void *other) {
+void Widget::Print(const std::string &res, const cv::Mat &det_res,
+                   void *other) {
   if (this_ptr == nullptr) {
     qDebug() << "****** 请在运行前先执行初始化！";
     return;
   }
-  emit this_ptr->SignalAppendText(res.c_str());
+  qRegisterMetaType<cv::Mat>("cv::Mat");
+  emit this_ptr->SignalAppendText(res.c_str(), det_res);
 }
